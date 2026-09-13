@@ -51,10 +51,20 @@ There's nothing to configure beyond that — no environment variables, no functi
 The reviews section on the homepage (`.proof`) is wired up for FeedSpring's Google Reviews "Attributes" (headless) integration, using the real feed ID:
 
 - `<script src="https://scripts.feedspring.com/google-reviews-attrs.js" async defer></script>` is loaded in `<head>`.
-- The section container carries `feedspring="google_0Az0aYJ6hQamjl3oqk1Yp"` and `feed-options="render:dynamic|limit:6"`.
+- The feed container (`#reviewsTrack`, inside the scrolling `#reviewsMarquee`) carries `feedspring="google_0Az0aYJ6hQamjl3oqk1Yp"` and `feed-options="render:dynamic|limit:16"`.
 - A single `<article feedspring="post" class="review-card">` acts as the template FeedSpring clones once per review it returns; `feed-field` attributes inside it (`review`, `name`, `star`/`star-inactive`) get filled in per review, and `feed-field="average-rating"` / `feed-field="total"` at the container level show the aggregate score and review count.
-- Star glyphs use plain `★`/`☆` text characters rather than FeedSpring's default SVG stars, to match the brand system's rule that the star glyph is never an SVG or image.
+- Star glyphs use plain `★`/`☆` text characters rather than FeedSpring's default SVG stars, to match the brand system's rule that the star glyph is never an SVG or image; capped at 5 visible per card regardless of how many the feed returns.
+- Long review text clamps to 5 lines with a trailing "…" so no card can balloon in height.
 - Until the script loads (or if it's ever blocked), the static fallback text shows instead — it never fabricates a fake review, just says reviews are loading.
+- A small inline-SVG Google "G" mark sits next to the aggregate rating, for attribution.
+
+**Reviews marquee behaviour** — once FeedSpring populates the 16 review cards, a small script (bottom of `index.html`, in the same IIFE as the rest of the page's JS) duplicates the set once and auto-scrolls it left-to-right in an infinite loop:
+- Hovering (desktop) or a press-and-hold (mobile) pauses it; releasing/moving away resumes it.
+- A plain click (or a quick tap on mobile) toggles a persistent pause on/off, independent of hover.
+- Dragging (mouse or touch) or scrolling/trackpad-swiping over it moves through the reviews manually, faster than the auto-scroll pace.
+- Speed eases in and out smoothly on every start/stop/resume rather than snapping.
+- Respects `prefers-reduced-motion`: the automatic scrolling is disabled, but manual drag/scroll still works.
+- The duplicated (visually-looping) copy of each card is marked `aria-hidden` so screen readers only ever hear the real 16 reviews once.
 
 This covers **Google reviews only**. Facebook Page reviews aren't available through FeedSpring, so that's left off for now.
 

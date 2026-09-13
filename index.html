@@ -194,18 +194,22 @@ button{font:inherit;cursor:pointer}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:var(--space-6);margin-top:var(--space-9)}
 
 /* ============ REVIEWS MARQUEE ============ */
-.proof{background:var(--paper);padding-block:var(--space-11);border-bottom:2px solid var(--ink-200);overflow:hidden}
+.proof{background:var(--paper);padding-block:var(--space-11);border-bottom:2px solid var(--ink-200)}
 .proof-head{display:flex;align-items:center;justify-content:center;gap:var(--space-6);flex-wrap:wrap;text-align:center}
 .stars{color:var(--red-500);font-size:19px;letter-spacing:.14em}
 .proof-head .eyebrow{font-size:var(--type-item-sm);color:var(--ink-900)}
 .google-eyebrow{display:inline-flex;align-items:center;gap:8px}
 .google-g{flex:0 0 auto}
-.reviews-grid{margin-top:var(--space-9);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-8)}
-.review-card{background:var(--white);border:2px solid var(--ink-900);padding:var(--space-7);box-shadow:7px 7px 0 var(--ink-900);overflow:hidden}
-.review-card:nth-child(4n+1){transform:rotate(-1.6deg)}
-.review-card:nth-child(4n+2){transform:rotate(1.2deg)}
-.review-card:nth-child(4n+3){transform:rotate(-.9deg)}
-.review-card:nth-child(4n+4){transform:rotate(1.8deg)}
+
+.marquee{margin-top:var(--space-9);overflow-x:auto;overflow-y:hidden;cursor:grab;touch-action:pan-x;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.marquee::-webkit-scrollbar{display:none}
+.marquee.is-dragging{cursor:grabbing}
+.marquee-track{display:flex;gap:var(--space-8);width:max-content;padding-inline:var(--layout-gutter);padding-block:6px var(--space-5)}
+.marquee-track>*{flex:0 0 auto}
+
+.review-card{position:relative;width:min(78vw,340px);background:var(--white);padding:26px var(--space-7) var(--space-7);filter:drop-shadow(7px 7px 0 var(--ink-900));border-left:2px solid var(--ink-900);border-right:2px solid var(--ink-900);border-bottom:2px solid var(--ink-900);clip-path:polygon(0% 14px,6.25% 0%,12.5% 14px,18.75% 0%,25% 14px,31.25% 0%,37.5% 14px,43.75% 0%,50% 14px,56.25% 0%,62.5% 14px,68.75% 0%,75% 14px,81.25% 0%,87.5% 14px,93.75% 0%,100% 14px,100% 100%,0% 100%)}
+.review-card:nth-child(odd){transform:rotate(-1.2deg)}
+.review-card:nth-child(even){transform:rotate(1.1deg)}
 .review-card .stars{font-size:20px;display:block;margin-bottom:12px;color:var(--red-500);letter-spacing:.1em;overflow:hidden;max-width:100%;white-space:normal}
 .review-card .stars>*{display:inline-block}
 .review-card .stars>*:nth-child(n+6){display:none}
@@ -349,7 +353,6 @@ button{font:inherit;cursor:pointer}
   .nav-toggle{display:flex}
   .order-bar-hours{display:none}
   .footer-grid{grid-template-columns:1fr}
-  .reviews-grid{grid-template-columns:1fr}
   .order-bar-row{justify-content:center}
 }
 </style>
@@ -391,17 +394,19 @@ button{font:inherit;cursor:pointer}
 
 <div class="fringe animate" aria-hidden="true"></div>
 
-<section class="proof" aria-label="Reviews" feedspring="google_0Az0aYJ6hQamjl3oqk1Yp" feed-options="render:dynamic|limit:6">
+<section class="proof" aria-label="Reviews" data-rise>
   <div class="wrap proof-head">
     <span class="stars" aria-hidden="true">★★★★★</span>
     <span class="eyebrow google-eyebrow"><svg class="google-g" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.68C4.672 4.552 6.656 3.58 9 3.58z"/></svg><span feed-field="average-rating">4.9</span> on Google · <span feed-field="total">200+</span> reviews</span>
   </div>
-  <div class="wrap reviews-grid">
-    <article feedspring="post" class="review-card">
-      <span class="stars" aria-hidden="true"><span feed-field="star">★</span><span feed-field="star-inactive">☆</span></span>
-      <p feed-field="review">Fetching the latest reviews from Google&hellip;</p>
-      <cite>— <span feed-field="name">A Google reviewer</span></cite>
-    </article>
+  <div class="marquee" id="reviewsMarquee">
+    <div class="marquee-track" id="reviewsTrack" feedspring="google_0Az0aYJ6hQamjl3oqk1Yp" feed-options="render:dynamic|limit:16">
+      <article feedspring="post" class="review-card">
+        <span class="stars" aria-hidden="true"><span feed-field="star">★</span><span feed-field="star-inactive">☆</span></span>
+        <p feed-field="review">Fetching the latest reviews from Google&hellip;</p>
+        <cite>— <span feed-field="name">A Google reviewer</span></cite>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -699,6 +704,108 @@ button{font:inherit;cursor:pointer}
     countIo.observe(pitSection);
   } else if (hoursStat) {
     hoursStat.textContent = '12';
+  }
+
+  /* reviews marquee — auto-scrolling, infinite loop, pause on hover/click/hold, drag/scroll to move faster */
+  var mViewport = document.getElementById('reviewsMarquee');
+  var mTrack = document.getElementById('reviewsTrack');
+  if (mViewport && mTrack) {
+    var cruiseSpeed = reduceMotion ? 0 : 0.55; /* px per ~16.7ms frame */
+    var currentSpeed = 0;
+    var isHovering = false;
+    var isManuallyPaused = false;
+    var isPointerDown = false;
+    var isWheeling = false;
+    var wheelTimer = null;
+    var singleWidth = 0;
+    var duplicated = false;
+    var lastTime = null;
+
+    function duplicateOnce(){
+      if (duplicated) return;
+      var kids = Array.prototype.slice.call(mTrack.children);
+      if (!kids.length) return;
+      kids.forEach(function(node){
+        var clone = node.cloneNode(true);
+        clone.removeAttribute('feedspring');
+        clone.setAttribute('aria-hidden', 'true');
+        clone.setAttribute('tabindex', '-1');
+        mTrack.appendChild(clone);
+      });
+      duplicated = true;
+      singleWidth = mTrack.scrollWidth / 2;
+      mViewport.scrollLeft = singleWidth;
+    }
+
+    /* wait for FeedSpring to finish injecting reviews, then duplicate once for a seamless loop */
+    var settleTimer = null;
+    var mo = new MutationObserver(function(){
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(function(){ mo.disconnect(); duplicateOnce(); }, 700);
+    });
+    mo.observe(mTrack, { childList: true });
+    setTimeout(function(){ mo.disconnect(); duplicateOnce(); }, 3500); /* fallback if the feed never loads */
+
+    mViewport.addEventListener('mouseenter', function(){ isHovering = true; });
+    mViewport.addEventListener('mouseleave', function(){ isHovering = false; });
+
+    var startX, startScrollLeft, dragged, holdTimer, holdFired;
+    mViewport.addEventListener('pointerdown', function(e){
+      isPointerDown = true;
+      dragged = false;
+      holdFired = false;
+      startX = e.clientX;
+      startScrollLeft = mViewport.scrollLeft;
+      if (e.pointerType !== 'touch') mViewport.classList.add('is-dragging');
+      try { mViewport.setPointerCapture(e.pointerId); } catch (err) {}
+      if (e.pointerType === 'touch') {
+        holdTimer = setTimeout(function(){
+          if (isPointerDown && !dragged) { isManuallyPaused = true; holdFired = true; }
+        }, 180);
+      }
+    });
+    mViewport.addEventListener('pointermove', function(e){
+      if (!isPointerDown) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 6) dragged = true;
+      if (e.pointerType === 'mouse') mViewport.scrollLeft = startScrollLeft - dx;
+    });
+    function endPointer(e){
+      if (!isPointerDown) return;
+      isPointerDown = false;
+      clearTimeout(holdTimer);
+      mViewport.classList.remove('is-dragging');
+      if (e.pointerType === 'touch') {
+        if (!holdFired && !dragged) isManuallyPaused = !isManuallyPaused;
+      } else if (!dragged) {
+        isManuallyPaused = !isManuallyPaused;
+      }
+    }
+    mViewport.addEventListener('pointerup', endPointer);
+    mViewport.addEventListener('pointercancel', endPointer);
+
+    mViewport.addEventListener('wheel', function(){
+      isWheeling = true;
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(function(){ isWheeling = false; }, 500);
+    }, { passive: true });
+
+    function frame(now){
+      if (lastTime === null) lastTime = now;
+      var dt = now - lastTime;
+      lastTime = now;
+      var target = (isPointerDown || isWheeling || isHovering || isManuallyPaused) ? 0 : cruiseSpeed;
+      currentSpeed += (target - currentSpeed) * 0.08;
+      if (!isPointerDown && !isWheeling && singleWidth > 0 && Math.abs(currentSpeed) > 0.001) {
+        mViewport.scrollLeft -= currentSpeed * (dt / 16.67);
+      }
+      if (singleWidth > 0) {
+        if (mViewport.scrollLeft <= 0) mViewport.scrollLeft += singleWidth;
+        else if (mViewport.scrollLeft >= singleWidth) mViewport.scrollLeft -= singleWidth;
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
   }
 })();
 </script>
