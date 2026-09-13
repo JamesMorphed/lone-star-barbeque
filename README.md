@@ -75,6 +75,23 @@ There's also an Instagram carousel ("Follow the smoke", just above the footer), 
 - A single `<a feedspring="post" class="insta-card" feed-field="link">` is the template FeedSpring clones per post — `feed-field="link"` sets the card's `href` to the post's Instagram permalink, and the `<img feed-field="img">` inside it sets the image `src`.
 - It's a plain CSS horizontal scroller (`scroll-snap`, no JS slider library), so it works the same on touch and with a mouse/trackpad without any extra dependency, in keeping with the rest of the site having no build step.
 
+## Performance pass (September 2026, mobile PageSpeed audit)
+
+James ran Google PageSpeed Insights on mobile and asked for the performance score to be improved, since most visitors are on mobile. Fixes made, mapped to what PSI flagged:
+
+- **Images converted to WebP** — the hero photo, the four board/gallery photos, the pit/atmosphere/shop photos and the two logo/badge PNGs (`just-eat`, `logotype-white`) are now `.webp`. The photos kept their real dimensions (they aren't actually oversized for a retina phone screen once you do the maths on the CSS display size × device pixel ratio — PSI's own "oversized image" check doesn't account for DPR); the two flat-graphic logo PNGs were genuinely ~7× larger than they're ever displayed, so those were resized down as well as converted. About 700KB shaved off the total page weight. The original `.jpg`/`.png` files have been deleted now nothing references them.
+- **Cumulative Layout Shift (mobile)** — PSI's "layout shift culprits" pointed at the hero text block. The cause: `.hero`'s height was set with `vh` units, which mobile Safari/Chrome recalculate as the address bar collapses/expands on scroll, shifting the bottom-anchored hero text. Added a `min-height:min(94svh,780px)` rule after the `vh` one — browsers that support the newer `svh` (small viewport height) unit use it and stop recalculating on scroll; older browsers just keep the original `vh` rule.
+- **Forced reflow** — PSI flagged a specific line reading `hero.offsetHeight` inside the scroll handler that shows/hides the sticky order bar. Reading element geometry inside a scroll handler forces the browser to redo layout on every scroll event. Fixed by caching the hero's height once (and on resize) instead of reading it every scroll tick.
+- **Non-composited animation** — the ticket-fringe stripe under the header was animating `background-position`, which can't run on the compositor thread and competes with scrolling/interaction for main-thread time. Rebuilt it as a `transform:translateX` animation on an oversized inner element inside an `overflow:hidden` wrapper — same visual effect, runs on the compositor.
+- **LCP (Largest Contentful Paint)** — the hero photo is the LCP element on this page. Added `fetchpriority="high"` on the `<img>` itself and a matching `<link rel="preload" as="image" fetchpriority="high">` in `<head>`, so the browser starts fetching it immediately instead of discovering it partway through parsing the page.
+- **Cache lifetimes** — `/img/*` was set to cache for 7 days in `_headers`; bumped to `public, max-age=31536000, immutable` (1 year), matching `/fonts/*`, since these are versioned-by-filename assets that don't change in place.
+
+## Google Analytics (GA4)
+
+The GA4 `gtag.js` snippet (`G-KDQX3RKHV8`) is installed as high in `<head>` as possible, right after the charset meta tag, per Google's own install guidance — this is standard practice for tracking accuracy of page views and traffic sources. The script itself loads `async`, so its position in `<head>` doesn't block or slow down rendering.
+
+Once this is live, check **GA4 → Reports → Realtime** for traffic starting to appear. To answer "who's coming from what source and what are they clicking on" (as asked), the next steps are typically: confirm Realtime shows visits after deploy, then look at **Reports → Acquisition → Traffic acquisition** for source/medium, and add GA4 event tracking (or just watch the automatic "click" events GA4 collects by default) for outbound clicks like the Just Eat and phone number buttons.
+
 ## Local preview
 
 No build tooling needed — open `index.html` directly in a browser, or serve the folder:

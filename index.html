@@ -2,6 +2,14 @@
 <html lang="en-GB">
 <head>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KDQX3RKHV8"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KDQX3RKHV8');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Texas barbeque, cooked in Kent. Two hand-built offset smokers, USDA meats, low and slow. Order, book a table, or find us at 13 Northwood Road, Ramsgate.">
 <meta name="robots" content="index, follow">
@@ -14,6 +22,8 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+
+<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
 
 <script src="https://scripts.feedspring.com/google-reviews-attrs.js" async defer></script>
 <script src="https://scripts.feedspring.com/instagram-attrs.js" async defer></script>
@@ -162,9 +172,10 @@ button{font:inherit;cursor:pointer}
 .notice{display:flex;gap:12px;align-items:flex-start;background:var(--navy-050);border:2px solid var(--navy-500);padding:16px 18px;font-family:var(--font-display);text-transform:uppercase;letter-spacing:var(--track-note);font-size:12.5px;line-height:1.5;color:var(--navy-700)}
 
 /* ============ FRINGE ============ */
-.fringe{height:14px;background-image:url('img/fringe.png');background-repeat:repeat-x;background-size:auto 100%}
-@media (min-width:1px){.fringe.animate{animation:fringeScroll 9s linear infinite}}
-@keyframes fringeScroll{from{background-position:0 0}to{background-position:-249px 0}}
+.fringe{height:14px;overflow:hidden}
+.fringe-inner{height:100%;width:calc(100% + 249px);background-image:url('img/fringe.png');background-repeat:repeat-x;background-size:auto 100%;will-change:transform}
+@media (min-width:1px){.fringe.animate .fringe-inner{animation:fringeScroll 9s linear infinite}}
+@keyframes fringeScroll{from{transform:translateX(0)}to{transform:translateX(-249px)}}
 
 /* ============ HEADER / NAV ============ */
 .site-header{position:sticky;top:0;z-index:60;background:var(--smoke-900);border-bottom:3px solid var(--red-500)}
@@ -181,7 +192,7 @@ button{font:inherit;cursor:pointer}
 .nav-toggle{flex-direction:column;gap:5px}
 
 /* ============ HERO ============ */
-.hero{position:relative;background:var(--smoke-900);min-height:min(94vh,780px);display:flex;align-items:flex-end;overflow:hidden}
+.hero{position:relative;background:var(--smoke-900);min-height:min(94vh,780px);min-height:min(94svh,780px);display:flex;align-items:flex-end;overflow:hidden}
 .hero-media{position:absolute;inset:0}
 .hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:saturate(1.05) contrast(1.05) brightness(.92)}
 .hero-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(9,14,17,.96) 0%,rgba(9,14,17,.88) 26%,rgba(9,14,17,.58) 52%,rgba(9,14,17,.22) 76%,rgba(9,14,17,0) 100%)}
@@ -363,7 +374,7 @@ button{font:inherit;cursor:pointer}
 
 <header class="site-header">
   <div class="wrap nav-row">
-    <a class="logo-link" href="#top" aria-label="Lone Star Barbeque — home"><img src="img/logotype-white.png" alt="Lone Star Barbeque" width="1600" height="322"></a>
+    <a class="logo-link" href="#top" aria-label="Lone Star Barbeque — home"><img src="img/logotype-white.webp" alt="Lone Star Barbeque" width="448" height="90"></a>
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><span></span></button>
     <ul class="nav-links" id="navLinks">
       <li><a href="#platters">The Platters</a></li>
@@ -378,21 +389,21 @@ button{font:inherit;cursor:pointer}
 <main id="main">
 
 <section class="hero" id="top" aria-label="Introduction">
-  <div class="hero-media"><img src="img/hero.jpg" alt="A loaded Lone Star Barbeque platter — brisket, hot link, pulled pork and sides on butcher paper" width="1125" height="1500"></div>
+  <div class="hero-media"><img src="img/hero.webp" alt="A loaded Lone Star Barbeque platter — brisket, hot link, pulled pork and sides on butcher paper" width="1125" height="1500" fetchpriority="high"></div>
   <div class="hero-scrim" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <span class="hero-tag">Ramsgate, Kent — since the first fire</span>
     <h1><span>Texas barbeque.</span><span class="accent">Cooked in Kent.</span></h1>
     <p class="hero-sub">Two hand-built offset smokers. Premium Holm Oak. USDA meats, low and slow — 12 hours before they hit the board.</p>
     <div class="hero-ctas">
-      <a class="btn btn-primary btn-lg" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.png" alt="Just Eat" width="2376" height="628"></a>
+      <a class="btn btn-primary btn-lg" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.webp" alt="Just Eat" width="330" height="87"></a>
       <a class="btn btn-onDark btn-lg" href="tel:01843663987">Call 01843 663987</a>
       <button class="btn btn-secondary btn-lg" type="button" data-open-menu>See the menu</button>
     </div>
   </div>
 </section>
 
-<div class="fringe animate" aria-hidden="true"></div>
+<div class="fringe animate" aria-hidden="true"><div class="fringe-inner"></div></div>
 
 <section class="proof" aria-label="Reviews" data-rise>
   <div class="wrap proof-head">
@@ -420,7 +431,7 @@ button{font:inherit;cursor:pointer}
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/wild-west.jpg" alt="The Wild West platter — brisket, pulled pork and hot link with sides on a tray" loading="lazy"></div>
+        <div class="platter-media"><img src="img/wild-west.webp" alt="The Wild West platter — brisket, pulled pork and hot link with sides on a tray" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">12 hour brisket</span><span class="badge badge-navy">Feeds two</span></div>
           <h3>12 hour USDA smoked brisket, 10 hour USA pulled pork &amp; a 4 hour jalapeños &amp; cheese hot link!</h3>
@@ -438,13 +449,13 @@ button{font:inherit;cursor:pointer}
           <p class="platter-desc">Fries triple cooked in beef tallow, house slaw &amp; a pot of our house BBQ sauce! Low and slow on the offset smoker, fuelled with premium Holm Oak.</p>
           <div class="platter-buy"><span class="platter-price">26</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
         </div>
-        <div class="platter-media"><img src="img/texas-ranger.jpg" alt="Sliced brisket close up, smoke ring visible" loading="lazy"></div>
+        <div class="platter-media"><img src="img/texas-ranger.webp" alt="Sliced brisket close up, smoke ring visible" loading="lazy"></div>
       </div>
     </article>
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/pit-boss.jpg" alt="Sharing platter for four with chicken, sides and chips" loading="lazy"></div>
+        <div class="platter-media"><img src="img/pit-boss.webp" alt="Sharing platter for four with chicken, sides and chips" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">Feeds four</span><span class="badge badge-navy">Order the day before</span></div>
           <h3>Four meats off the pit, four sides, and everything that goes with them!</h3>
@@ -478,10 +489,10 @@ button{font:inherit;cursor:pointer}
     </div>
 
     <ul class="board-photos" data-rise>
-      <li><div class="board-photo-frame"><img src="img/board-1.jpg" alt="The buffalo outlaw chicken burger" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-2.jpg" alt="Smash patty burger with dripping fries" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-3.jpg" alt="Sticky glazed wings" loading="lazy"></div><div class="board-caption">Sticky glazed wings!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-4.jpg" alt="Beef dripping fries" loading="lazy"></div><div class="board-caption">Beef dripping fries!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-1.webp" alt="The buffalo outlaw chicken burger" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-2.webp" alt="Smash patty burger with dripping fries" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-3.webp" alt="Sticky glazed wings" loading="lazy"></div><div class="board-caption">Sticky glazed wings!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-4.webp" alt="Beef dripping fries" loading="lazy"></div><div class="board-caption">Beef dripping fries!</div></li>
     </ul>
 
     <div class="board-ctas">
@@ -504,7 +515,7 @@ button{font:inherit;cursor:pointer}
       </div>
       <div class="pit-hashtag">#SLOWFEETDONTEAT</div>
     </div>
-    <div class="pit-media" data-rise="right"><img src="img/pit-atmosphere.jpg" alt="The mounted bison head over the pit — Lone Star Barbeque's Texas signage inside the shop" loading="lazy"></div>
+    <div class="pit-media" data-rise="right"><img src="img/pit-atmosphere.webp" alt="The mounted bison head over the pit — Lone Star Barbeque's Texas signage inside the shop" loading="lazy"></div>
   </div>
 </section>
 
@@ -515,7 +526,7 @@ button{font:inherit;cursor:pointer}
       <div class="way panel" style="padding:var(--space-9)">
         <span class="eyebrow" style="color:var(--red-500)">Order in</span>
         <p>Delivery &amp; collection across Thanet. Platters go on at midday and come off when they're gone.</p>
-        <a class="btn btn-primary btn-full" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.png" alt="Just Eat" width="2376" height="628"></a>
+        <a class="btn btn-primary btn-full" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.webp" alt="Just Eat" width="330" height="87"></a>
       </div>
       <div class="way navy panel panel-navy" style="padding:var(--space-9)">
         <span class="eyebrow" style="color:var(--navy-500)">Call the pit</span>
@@ -533,7 +544,7 @@ button{font:inherit;cursor:pointer}
 
 <section class="section section-paper find" id="find" aria-labelledby="find-h">
   <div class="wrap find-grid">
-    <div class="find-media" data-rise="left"><img src="img/shop.jpg" alt="The Lone Star Barbeque shopfront at 13 Northwood Road, Ramsgate" loading="lazy"></div>
+    <div class="find-media" data-rise="left"><img src="img/shop.webp" alt="The Lone Star Barbeque shopfront at 13 Northwood Road, Ramsgate" loading="lazy"></div>
     <div data-rise="right">
       <h2 id="find-h">Find us</h2>
       <div class="find-details">
@@ -544,7 +555,7 @@ button{font:inherit;cursor:pointer}
       <div class="star-rule" aria-hidden="true">★</div>
       <div class="notice">When the pit runs dry, it runs dry. Follow us for what's on the board today.</div>
       <div class="find-ctas">
-        <a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.png" alt="Just Eat" width="2376" height="628"></a>
+        <a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order on <img src="img/just-eat.webp" alt="Just Eat" width="330" height="87"></a>
         <a class="btn btn-outline" href="https://maps.google.com/?q=13+Northwood+Road+Ramsgate+CT12+6RR" target="_blank" rel="noopener">Directions</a>
       </div>
     </div>
@@ -570,7 +581,7 @@ button{font:inherit;cursor:pointer}
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <img src="img/logotype-white.png" alt="Lone Star Barbeque" width="1600" height="322">
+      <img src="img/logotype-white.webp" alt="Lone Star Barbeque" width="448" height="90">
       <p>Texas barbeque, cooked in Kent. Two hand-built offset smokers, premium Holm Oak, and nothing that hasn't earned its place on the board.</p>
       <div class="social-row">
         <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg></a>
@@ -616,7 +627,7 @@ button{font:inherit;cursor:pointer}
 <div class="order-bar" id="orderBar">
   <div class="wrap order-bar-row">
     <span class="order-bar-hours">Thu · Fri · Sat · Sun — until 9:30pm</span>
-    <a class="btn btn-primary btn-sm" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order <img src="img/just-eat.png" alt="Just Eat" width="2376" height="628"></a>
+    <a class="btn btn-primary btn-sm" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order <img src="img/just-eat.webp" alt="Just Eat" width="330" height="87"></a>
     <a class="btn btn-onDark btn-sm" href="tel:01843663987">Call</a>
     <button class="btn btn-secondary btn-sm" type="button" data-open-menu>Menu</button>
   </div>
@@ -660,8 +671,11 @@ button{font:inherit;cursor:pointer}
   /* sticky order bar */
   var bar = document.getElementById('orderBar');
   var hero = document.querySelector('.hero');
+  var heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+  var onResize = function(){ heroHeight = hero ? hero.offsetHeight : window.innerHeight; };
+  window.addEventListener('resize', onResize, { passive: true });
   var onScroll = function(){
-    var past = window.scrollY > (hero ? hero.offsetHeight * 0.5 : window.innerHeight * 0.5);
+    var past = window.scrollY > heroHeight * 0.5;
     bar.classList.toggle('is-visible', past);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
