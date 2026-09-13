@@ -198,15 +198,19 @@ button{font:inherit;cursor:pointer}
 .proof-head{display:flex;align-items:center;justify-content:center;gap:var(--space-6);flex-wrap:wrap;text-align:center}
 .stars{color:var(--red-500);font-size:19px;letter-spacing:.14em}
 .proof-head .eyebrow{font-size:var(--type-item-sm);color:var(--ink-900)}
+.google-eyebrow{display:inline-flex;align-items:center;gap:8px}
+.google-g{flex:0 0 auto}
 .reviews-grid{margin-top:var(--space-9);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-8)}
-.review-card{background:var(--white);border:2px solid var(--ink-900);padding:var(--space-7);box-shadow:7px 7px 0 var(--ink-900)}
+.review-card{background:var(--white);border:2px solid var(--ink-900);padding:var(--space-7);box-shadow:7px 7px 0 var(--ink-900);overflow:hidden}
 .review-card:nth-child(4n+1){transform:rotate(-1.6deg)}
 .review-card:nth-child(4n+2){transform:rotate(1.2deg)}
 .review-card:nth-child(4n+3){transform:rotate(-.9deg)}
 .review-card:nth-child(4n+4){transform:rotate(1.8deg)}
-.review-card .stars{font-size:20px;display:block;margin-bottom:12px;color:var(--red-500);letter-spacing:.1em}
+.review-card .stars{font-size:20px;display:block;margin-bottom:12px;color:var(--red-500);letter-spacing:.1em;overflow:hidden;max-width:100%;white-space:normal}
+.review-card .stars>*{display:inline-block}
+.review-card .stars>*:nth-child(n+6){display:none}
 .review-card .stars [feed-field="star-inactive"]{color:var(--ink-200)}
-.review-card p{font-size:var(--type-body);line-height:1.6;color:var(--ink-900)}
+.review-card p{font-size:var(--type-body);line-height:1.6;color:var(--ink-900);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5;overflow:hidden}
 .review-card cite{display:block;font-style:normal;font-family:var(--font-display);text-transform:uppercase;font-size:var(--type-note);letter-spacing:var(--track-note);color:var(--navy-500);margin-top:var(--space-5)}
 
 /* ============ INSTAGRAM CAROUSEL ============ */
@@ -390,7 +394,7 @@ button{font:inherit;cursor:pointer}
 <section class="proof" aria-label="Reviews" feedspring="google_0Az0aYJ6hQamjl3oqk1Yp" feed-options="render:dynamic|limit:6">
   <div class="wrap proof-head">
     <span class="stars" aria-hidden="true">★★★★★</span>
-    <span class="eyebrow"><span feed-field="average-rating">4.9</span> on Google · <span feed-field="total">200+</span> reviews</span>
+    <span class="eyebrow google-eyebrow"><svg class="google-g" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.68C4.672 4.552 6.656 3.58 9 3.58z"/></svg><span feed-field="average-rating">4.9</span> on Google · <span feed-field="total">200+</span> reviews</span>
   </div>
   <div class="wrap reviews-grid">
     <article feedspring="post" class="review-card">
