@@ -86,6 +86,19 @@ James ran Google PageSpeed Insights on mobile and asked for the performance scor
 - **LCP (Largest Contentful Paint)** — the hero photo is the LCP element on this page. Added `fetchpriority="high"` on the `<img>` itself and a matching `<link rel="preload" as="image" fetchpriority="high">` in `<head>`, so the browser starts fetching it immediately instead of discovering it partway through parsing the page.
 - **Cache lifetimes** — `/img/*` was set to cache for 7 days in `_headers`; bumped to `public, max-age=31536000, immutable` (1 year), matching `/fonts/*`, since these are versioned-by-filename assets that don't change in place.
 
+## Photography and hero carousel (October 2026)
+
+Photo slots in `img/`: `hero-1..5.webp` (hero carousel), `platter-wild-west`, `platter-texas-ranger`, `platter-pit-boss`, `board-chicken`, `board-smash`, `board-thighs`, `board-fries`, `pit-ribs`, plus the existing `shop.webp` for Find us.
+
+**Cache rule:** `_headers` caches `/img/*` for a year (immutable). To change a photo, save it under a NEW filename and update `index.html`. Reusing a filename means returning visitors keep seeing the old image.
+
+**Hero carousel:** 5 slides with a WebGL "smoke and ember" dissolve (code is the `hero` block at the end of the inline script in `index.html`).
+- Slide 1 is a normal `<img>` (preloaded, so LCP and no-JS are unaffected). Slides 2 to 5 load after the page `load` event.
+- It renders only during the 1.5s transitions, DPR capped at 1.5.
+- Falls back to a CSS crossfade if WebGL is missing or the context is lost. Skipped entirely on Save-Data or 2g.
+- Autoplay has a pause button (WCAG 2.2.2), pauses when the tab is hidden or the hero is off screen, supports dots and swipe. With `prefers-reduced-motion` there is no autoplay and no pause button.
+- To add or swap slides, edit `heroSrcs` in the script and add matching width/height-consistent images (3:4 portrait crops work best).
+
 ## Google Analytics (GA4)
 
 The GA4 `gtag.js` snippet (`G-KDQX3RKHV8`) is installed as high in `<head>` as possible, right after the charset meta tag, per Google's own install guidance — this is standard practice for tracking accuracy of page views and traffic sources. The script itself loads `async`, so its position in `<head>` doesn't block or slow down rendering.

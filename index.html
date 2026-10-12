@@ -23,7 +23,7 @@ gtag('config', 'G-KDQX3RKHV8');
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
+<link rel="preload" as="image" href="img/hero-1.webp" fetchpriority="high">
 
 <script src="https://scripts.feedspring.com/google-reviews-attrs.js" async defer></script>
 <script src="https://scripts.feedspring.com/instagram-attrs.js" async defer></script>
@@ -195,6 +195,24 @@ button{font:inherit;cursor:pointer}
 .hero{position:relative;background:var(--smoke-900);min-height:min(94vh,780px);min-height:min(94svh,780px);display:flex;align-items:flex-end;overflow:hidden}
 .hero-media{position:absolute;inset:0}
 .hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:saturate(1.05) contrast(1.05) brightness(.92)}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0}
+.hero-canvas.is-live{opacity:1}
+.hero-media img.hero-fade{position:absolute;inset:0;opacity:0;transition:opacity 900ms var(--ease-out)}
+.hero-media img.hero-fade.is-active{opacity:1}
+.hero-controls{position:absolute;left:0;right:0;bottom:16px;margin-inline:auto;display:flex;align-items:center;gap:var(--space-5);z-index:2}
+.hero-pause{position:relative;flex:0 0 auto;width:30px;height:30px;padding:0;background:rgba(9,14,17,.55);border:2px solid var(--white);border-radius:0;box-shadow:3px 3px 0 var(--red-500)}
+.hero-pause span{position:absolute;inset:0;display:block}
+.hero-pause span::before,.hero-pause span::after{content:"";position:absolute;top:7px;width:3px;height:10px;background:var(--white)}
+.hero-pause span::before{left:7px}
+.hero-pause span::after{left:13px}
+.hero-pause[aria-pressed="true"] span::before{left:9px;top:6px;width:0;height:0;background:none;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent var(--white)}
+.hero-pause[aria-pressed="true"] span::after{display:none}
+.hero-dots{display:flex;align-items:center;gap:2px}
+.hero-dot{position:relative;width:34px;height:26px;padding:0;background:none;border:0;border-radius:0}
+.hero-dot::before{content:"";position:absolute;left:3px;right:3px;top:50%;height:5px;margin-top:-2.5px;background:rgba(255,255,255,.5);box-shadow:0 0 0 1px rgba(9,14,17,.55)}
+.hero-dot[aria-current="true"]::before{background:var(--red-500);box-shadow:0 0 0 1px var(--white)}
+.hero-dot:disabled{cursor:default}
+.hero-dot:disabled::before{background:rgba(255,255,255,.2)}
 .hero-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(9,14,17,.96) 0%,rgba(9,14,17,.88) 26%,rgba(9,14,17,.58) 52%,rgba(9,14,17,.22) 76%,rgba(9,14,17,0) 100%)}
 .hero-inner{position:relative;padding-block:var(--space-13) var(--space-11);width:100%}
 .hero-tag{display:inline-block;background:var(--red-500);color:var(--white);font-family:var(--font-display);text-transform:uppercase;font-size:13px;letter-spacing:var(--track-ribbon);padding:7px 14px}
@@ -256,6 +274,8 @@ button{font:inherit;cursor:pointer}
 .platter.tone-navy h3{color:var(--red-500)}
 .platter-desc{font-family:var(--font-display);text-transform:uppercase;font-size:var(--type-note);line-height:1.55;letter-spacing:var(--track-note);color:var(--ink-900);margin-top:var(--space-5);max-width:46ch}
 .platter-buy{display:flex;align-items:center;gap:var(--space-7);margin-top:var(--space-8);flex-wrap:wrap}
+.cur{font-size:.5em;line-height:0;vertical-align:baseline;position:relative;top:-.62em;margin-right:.1em;letter-spacing:0}
+.menu-row-price .cur{font-size:.6em;top:-.4em}
 .platter-price{font-family:var(--font-display);font-size:44px;line-height:1;color:var(--ink-900)}
 
 /* ============ BOARD ============ */
@@ -389,8 +409,15 @@ button{font:inherit;cursor:pointer}
 <main id="main">
 
 <section class="hero" id="top" aria-label="Introduction">
-  <div class="hero-media"><img src="img/hero.webp" alt="A loaded Lone Star Barbeque platter — brisket, hot link, pulled pork and sides on butcher paper" width="1125" height="1500" fetchpriority="high"></div>
+  <div class="hero-media" id="heroMedia">
+    <img id="heroImg" src="img/hero-1.webp" alt="A Lone Star Barbeque tray on a sunlit red table: sliced brisket and turkey, ribs, beans, pickles and a bucket of fries" width="1125" height="1500" fetchpriority="high">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+  </div>
   <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="wrap hero-controls" id="heroControls" hidden>
+    <button type="button" class="hero-pause" id="heroPause" aria-label="Pause the hero slideshow" aria-pressed="false"><span aria-hidden="true"></span></button>
+    <div class="hero-dots" id="heroDots" role="group" aria-label="Choose hero image"></div>
+  </div>
   <div class="wrap hero-inner">
     <span class="hero-tag">Ramsgate, Kent — since the first fire</span>
     <h1><span>Texas barbeque.</span><span class="accent">Cooked in Kent.</span></h1>
@@ -431,12 +458,12 @@ button{font:inherit;cursor:pointer}
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/wild-west.webp" alt="The Wild West platter — brisket, pulled pork and hot link with sides on a tray" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-wild-west.webp" alt="The Wild West platter — sliced brisket and turkey, fries in a bucket, beans, pickles and jalapeño cheese sausage on a tray" width="1200" height="900" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">12 hour brisket</span><span class="badge badge-navy">Feeds two</span></div>
           <h3>12 hour USDA smoked brisket, 10 hour USA pulled pork &amp; a 4 hour jalapeños &amp; cheese hot link!</h3>
           <p class="platter-desc">Two sides of your choosing, house slaw, pickles &amp; our house BBQ sauce!! Fries double fried in beef dripping for a superior crunch. #NOSEEDOILS</p>
-          <div class="platter-buy"><span class="platter-price">42</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
+          <div class="platter-buy"><span class="platter-price"><span class="cur">£</span>42</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
         </div>
       </div>
     </article>
@@ -447,20 +474,20 @@ button{font:inherit;cursor:pointer}
           <div class="platter-badges"><span class="badge badge-navy">½ LB (226G)</span><span class="badge badge-red">One plate</span></div>
           <h3>Half a pound of 12 hour USDA smoked brisket, sliced to order!</h3>
           <p class="platter-desc">Fries triple cooked in beef tallow, house slaw &amp; a pot of our house BBQ sauce! Low and slow on the offset smoker, fuelled with premium Holm Oak.</p>
-          <div class="platter-buy"><span class="platter-price">26</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
+          <div class="platter-buy"><span class="platter-price"><span class="cur">£</span>26</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
         </div>
-        <div class="platter-media"><img src="img/texas-ranger.webp" alt="Sliced brisket close up, smoke ring visible" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-texas-ranger.webp" alt="Sliced brisket close up, smoke ring visible, with ribs and sausage in a foil tray" width="1200" height="900" loading="lazy"></div>
       </div>
     </article>
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/pit-boss.webp" alt="Sharing platter for four with chicken, sides and chips" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-pit-boss.webp" alt="The sharing platter on Lone Star paper — ribs, brisket, sausage, pulled pork, cornbread, pickles and sauces" width="1200" height="900" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">Feeds four</span><span class="badge badge-navy">Order the day before</span></div>
           <h3>Four meats off the pit, four sides, and everything that goes with them!</h3>
           <p class="platter-desc">Brisket, pulled pork, hot links &amp; smoked chicken thigh. Pickles, slaw, cornbread &amp; two pots of house BBQ sauce!! Order the day before for parties over six.</p>
-          <div class="platter-buy"><span class="platter-price">85</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
+          <div class="platter-buy"><span class="platter-price"><span class="cur">£</span>85</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
         </div>
       </div>
     </article>
@@ -474,25 +501,25 @@ button{font:inherit;cursor:pointer}
     <div class="board-cols" data-rise>
       <div class="board-col navy">
         <h3>Outlawed sandwiches</h3>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">The Mississippi Royale!</div><div class="menu-row-desc">12 hour brisket, American cheese melted on &amp; inside out bun, toasted with a thin layer of mayo until golden brown!</div></div><span class="menu-row-price">14</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Original Oklahoma!</div><div class="menu-row-desc">10 hour USA smoked pulled pork, house slaw &amp; house BBQ sauce!!</div></div><span class="menu-row-price">13</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Billy The Kids Burger!</div><div class="menu-row-desc">Locally sourced Broxhall Farm dry aged beef patty, smashed to order. Add bacon 2 · extra patty 3</div></div><span class="menu-row-price">12</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">4 hour smoked hot link!</div><div class="menu-row-desc">Jalapeños &amp; cheese hot link, mustard, crispy onions!</div></div><span class="menu-row-price">11</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">The Mississippi Royale!</div><div class="menu-row-desc">12 hour brisket, American cheese melted on &amp; inside out bun, toasted with a thin layer of mayo until golden brown!</div></div><span class="menu-row-price"><span class="cur">£</span>14</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Original Oklahoma!</div><div class="menu-row-desc">10 hour USA smoked pulled pork, house slaw &amp; house BBQ sauce!!</div></div><span class="menu-row-price"><span class="cur">£</span>13</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Billy The Kids Burger!</div><div class="menu-row-desc">Locally sourced Broxhall Farm dry aged beef patty, smashed to order. Add bacon 2 · extra patty 3</div></div><span class="menu-row-price"><span class="cur">£</span>12</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">4 hour smoked hot link!</div><div class="menu-row-desc">Jalapeños &amp; cheese hot link, mustard, crispy onions!</div></div><span class="menu-row-price"><span class="cur">£</span>11</span></div>
       </div>
       <div class="board-col">
         <h3>Sides &amp; extras</h3>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Beef dripping fries!</div><div class="menu-row-desc">Double fried in beef dripping for a superior crunch. #NOSEEDOILS</div></div><span class="menu-row-price">5</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Tallow-cooked spuds!</div><div class="menu-row-desc">Triple cooked in beef tallow!</div></div><span class="menu-row-price">6</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">House slaw &amp; pickles!</div><div class="menu-row-desc">Cut fresh every service day!</div></div><span class="menu-row-price">4</span></div>
-        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Banana pudding!</div><div class="menu-row-desc">Our banana pudding is not to be missed!</div></div><span class="menu-row-price">6</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Beef dripping fries!</div><div class="menu-row-desc">Double fried in beef dripping for a superior crunch. #NOSEEDOILS</div></div><span class="menu-row-price"><span class="cur">£</span>5</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Tallow-cooked spuds!</div><div class="menu-row-desc">Triple cooked in beef tallow!</div></div><span class="menu-row-price"><span class="cur">£</span>6</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">House slaw &amp; pickles!</div><div class="menu-row-desc">Cut fresh every service day!</div></div><span class="menu-row-price"><span class="cur">£</span>4</span></div>
+        <div class="menu-row"><div class="menu-row-main"><div class="menu-row-name">Banana pudding!</div><div class="menu-row-desc">Our banana pudding is not to be missed!</div></div><span class="menu-row-price"><span class="cur">£</span>6</span></div>
       </div>
     </div>
 
     <ul class="board-photos" data-rise>
-      <li><div class="board-photo-frame"><img src="img/board-1.webp" alt="The buffalo outlaw chicken burger" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-2.webp" alt="Smash patty burger with dripping fries" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-3.webp" alt="Sticky glazed wings" loading="lazy"></div><div class="board-caption">Sticky glazed wings!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-4.webp" alt="Beef dripping fries" loading="lazy"></div><div class="board-caption">Beef dripping fries!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-chicken.webp" alt="The buffalo outlaw crispy chicken burger with melted cheese" width="800" height="800" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-smash.webp" alt="Smash patty burger with seasoned fries and a can of Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-thighs.webp" alt="Crispy boneless thigh pieces with peppers and spring onion, fries and a Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Boneless thigh pieces!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-fries.webp" alt="Jalapeño and cheese hot link with a cup of seasoned fries" width="900" height="900" loading="lazy"></div><div class="board-caption">Fries &amp; hot link!</div></li>
     </ul>
 
     <div class="board-ctas">
@@ -515,7 +542,7 @@ button{font:inherit;cursor:pointer}
       </div>
       <div class="pit-hashtag">#SLOWFEETDONTEAT</div>
     </div>
-    <div class="pit-media" data-rise="right"><img src="img/pit-atmosphere.webp" alt="The mounted bison head over the pit — Lone Star Barbeque's Texas signage inside the shop" loading="lazy"></div>
+    <div class="pit-media" data-rise="right"><img src="img/pit-ribs.webp" alt="A full rack of smoked St. Louis ribs held up in front of the Lone Star Barbeque sign" width="1000" height="1000" loading="lazy"></div>
   </div>
 </section>
 
@@ -821,6 +848,286 @@ button{font:inherit;cursor:pointer}
     }
     requestAnimationFrame(frame);
   }
+  /* hero carousel — WebGL "smoke and ember" dissolve between photos.
+     The first photo is a plain <img> (fast LCP, works with no JS). The other slides load after the page
+     has finished loading, then a canvas takes over and dissolves between them. Falls back to a simple
+     crossfade with no WebGL, and stays a single static photo on Save-Data / very slow connections. */
+  var heroMedia = document.getElementById('heroMedia');
+  var heroImg = document.getElementById('heroImg');
+  var heroCanvas = document.getElementById('heroCanvas');
+  var heroControls = document.getElementById('heroControls');
+  var heroPause = document.getElementById('heroPause');
+  var heroDots = document.getElementById('heroDots');
+  var heroConn = navigator.connection || {};
+  var heroLowData = heroConn.saveData || /(^|-)2g$/.test(heroConn.effectiveType || '');
+  if (heroMedia && heroImg && heroCanvas && heroControls && heroPause && heroDots && hero && !heroLowData) {
+    var heroSrcs = ['img/hero-1.webp', 'img/hero-2.webp', 'img/hero-3.webp', 'img/hero-4.webp', 'img/hero-5.webp'];
+    var heroAlts = [heroImg.getAttribute('alt')];
+    var hN = heroSrcs.length;
+    var hImgs = [heroImg];
+    var hReady = [];
+    var hDotEls = [];
+    var hCur = 0;
+    var hBusy = false;
+    var hPlaying = !reduceMotion;
+    var hInView = true;
+    var hTimer = null;
+    var hStarted = false;
+    var hMode = 'gl';
+    var hGL = null;
+    var HOLD_MS = 5200;
+    var DUR_MS = 1500;
+
+    var hVert = 'attribute vec2 aPos;varying vec2 vUv;void main(){vUv=vec2(aPos.x*.5+.5,.5-aPos.y*.5);gl_Position=vec4(aPos,0.,1.);}';
+    var hFrag = [
+      '#ifdef GL_FRAGMENT_PRECISION_HIGH',
+      'precision highp float;',
+      '#else',
+      'precision mediump float;',
+      '#endif',
+      'uniform sampler2D uA;uniform sampler2D uB;uniform vec2 uRes;uniform vec2 uSizeA;uniform vec2 uSizeB;uniform float uP;varying vec2 vUv;',
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      'float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.-2.*f);',
+      ' return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}',
+      'float fbm(vec2 p){float v=0.;float a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(17.1,9.7);a*=.5;}return v;}',
+      'vec2 cover(vec2 uv,vec2 img){float rc=uRes.x/uRes.y;float ri=img.x/img.y;',
+      ' vec2 s=rc>ri?vec2(1.,ri/rc):vec2(rc/ri,1.);vec2 pos=vec2(.5,.3);return (uv-pos)*s+pos;}',
+      'void main(){',
+      ' vec2 uv=vUv;float asp=uRes.x/uRes.y;',
+      ' vec2 q=vec2(uv.x*asp,uv.y)*2.2;',
+      ' float n=fbm(q+vec2(0.,-uP*.9));',
+      ' float d=n*.62+(1.-uv.y)*.38;',
+      ' float edge=.14;float p=uP*(1.+2.*edge)-edge;',
+      ' float m=1.-smoothstep(p-edge,p+edge,d);',
+      ' float band=clamp(1.-abs(d-p)/edge,0.,1.);',
+      ' float amp=sin(3.14159*uP);',
+      ' vec2 disp=vec2(n-.5,fbm(q+7.3)-.5)*.05*amp;',
+      ' vec3 ca=texture2D(uA,cover(uv+disp*(.5+m),uSizeA)).rgb;',
+      ' vec3 cb=texture2D(uB,cover(uv-disp*(1.5-m),uSizeB)).rgb;',
+      ' vec3 col=mix(ca,cb,m);',
+      ' float b2=band*band*(3.-2.*band);',
+      ' col=mix(col,vec3(.07,.06,.055),b2*.55);',
+      ' col+=vec3(.95,.28,.1)*pow(band,4.)*.55*amp;',
+      ' float l=dot(col,vec3(.299,.587,.114));',
+      ' col=mix(vec3(l),col,1.05);col=(col-.5)*1.05+.5;col*=.92;',
+      ' gl_FragColor=vec4(col,1.);}'
+    ].join('\n');
+
+    function hWhenIdle(fn){ (window.requestIdleCallback || function(f){ setTimeout(f, 300); })(fn, { timeout: 2500 }); }
+    function hAfterLoad(fn){
+      if (document.readyState === 'complete') hWhenIdle(fn);
+      else window.addEventListener('load', function(){ hWhenIdle(fn); }, { once: true });
+    }
+
+    function hBuildDots(){
+      for (var i = 0; i < hN; i++) {
+        (function(i){
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'hero-dot';
+          b.setAttribute('aria-label', 'Show hero image ' + (i + 1) + ' of ' + hN);
+          b.disabled = !hReady[i];
+          if (i === 0) b.setAttribute('aria-current', 'true');
+          b.addEventListener('click', function(){ hGoTo(i, true); });
+          heroDots.appendChild(b);
+          hDotEls[i] = b;
+        })(i);
+      }
+    }
+    function hMarkDots(){
+      for (var i = 0; i < hDotEls.length; i++) {
+        if (i === hCur) hDotEls[i].setAttribute('aria-current', 'true'); else hDotEls[i].removeAttribute('aria-current');
+      }
+    }
+
+    /* ---- WebGL ---- */
+    function hMakeShader(gl, type, src){
+      var sh = gl.createShader(type);
+      gl.shaderSource(sh, src); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error('shader');
+      return sh;
+    }
+    function hInitGL(){
+      var gl = heroCanvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'low-power' });
+      if (!gl) throw new Error('nogl');
+      var prog = gl.createProgram();
+      gl.attachShader(prog, hMakeShader(gl, gl.VERTEX_SHADER, hVert));
+      gl.attachShader(prog, hMakeShader(gl, gl.FRAGMENT_SHADER, hFrag));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
+      gl.useProgram(prog);
+      var buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      var loc = gl.getAttribLocation(prog, 'aPos');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      var u = {};
+      ['uA', 'uB', 'uRes', 'uSizeA', 'uSizeB', 'uP'].forEach(function(n){ u[n] = gl.getUniformLocation(prog, n); });
+      gl.uniform1i(u.uA, 0); gl.uniform1i(u.uB, 1);
+      return { gl: gl, u: u, tex: [] };
+    }
+    function hTex(i){
+      var g = hGL, gl = g.gl;
+      if (g.tex[i]) return g.tex[i];
+      var t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, hImgs[i]);
+      g.tex[i] = t;
+      return t;
+    }
+    function hDraw(a, b, p){
+      var g = hGL, gl = g.gl;
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, hTex(a));
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, hTex(b));
+      gl.uniform2f(g.u.uRes, heroCanvas.width, heroCanvas.height);
+      gl.uniform2f(g.u.uSizeA, hImgs[a].naturalWidth, hImgs[a].naturalHeight);
+      gl.uniform2f(g.u.uSizeB, hImgs[b].naturalWidth, hImgs[b].naturalHeight);
+      gl.uniform1f(g.u.uP, p);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    var hResizeQueued = false;
+    function hResize(){
+      hResizeQueued = false;
+      if (hMode !== 'gl' || !hGL) return;
+      var r = heroMedia.getBoundingClientRect();
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var w = Math.max(2, Math.round(r.width * dpr)), h = Math.max(2, Math.round(r.height * dpr));
+      if (heroCanvas.width !== w || heroCanvas.height !== h) { heroCanvas.width = w; heroCanvas.height = h; }
+      hGL.gl.viewport(0, 0, w, h);
+      if (!hBusy) hDraw(hCur, hCur, 0);
+    }
+    function hQueueResize(){ if (!hResizeQueued) { hResizeQueued = true; requestAnimationFrame(hResize); } }
+
+    /* ---- crossfade fallback ---- */
+    var hFadeEls = [];
+    function hSwitchToFade(){
+      if (hMode === 'fade') return;
+      hMode = 'fade';
+      heroCanvas.classList.remove('is-live');
+      heroCanvas.style.display = 'none';
+      heroImg.classList.add('hero-fade');
+      hFadeEls[0] = heroImg;
+      for (var i = 1; i < hN; i++) {
+        var el = new Image();
+        el.className = 'hero-fade';
+        el.alt = '';
+        el.setAttribute('aria-hidden', 'true');
+        el.src = heroSrcs[i];
+        heroMedia.insertBefore(el, heroCanvas);
+        hFadeEls[i] = el;
+      }
+      hFadeEls[hCur].classList.add('is-active');
+      hBusy = false;
+    }
+
+    /* ---- slide changes ---- */
+    function hEase(t){ return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function hGoTo(next, manual){
+      if (next === hCur || hBusy || !hReady[next]) { hSchedule(); return; }
+      var from = hCur;
+      hCur = next;
+      hMarkDots();
+      if (manual) clearTimeout(hTimer);
+      if (hMode === 'fade') {
+        hFadeEls[from].classList.remove('is-active');
+        hFadeEls[next].classList.add('is-active');
+        hSchedule();
+        return;
+      }
+      if (reduceMotion) { try { hDraw(next, next, 0); } catch (e) { hSwitchToFade(); } hSchedule(); return; }
+      hBusy = true;
+      var t0 = null;
+      function frame(now){
+        if (t0 === null) t0 = now;
+        var t = Math.min(1, (now - t0) / DUR_MS);
+        try {
+          if (t < 1) { hDraw(from, next, hEase(t)); requestAnimationFrame(frame); }
+          else { hDraw(next, next, 0); hBusy = false; hSchedule(); }
+        } catch (e) { hBusy = false; hSwitchToFade(); hFadeEls[from].classList.remove('is-active'); hFadeEls[next].classList.add('is-active'); }
+      }
+      requestAnimationFrame(frame);
+    }
+    function hStep(dir){
+      for (var k = 1; k <= hN; k++) {
+        var idx = (hCur + dir * k + hN * k) % hN;
+        if (hReady[idx]) { hGoTo(idx, true); return; }
+      }
+    }
+    function hSchedule(){
+      clearTimeout(hTimer);
+      if (!hStarted || !hPlaying || reduceMotion || document.hidden || !hInView) return;
+      hTimer = setTimeout(function(){
+        if (hBusy) { hSchedule(); return; }
+        for (var k = 1; k < hN; k++) {
+          var idx = (hCur + k) % hN;
+          if (hReady[idx]) { hGoTo(idx, false); return; }
+        }
+      }, HOLD_MS);
+    }
+
+    function hStart(){
+      if (hStarted) return;
+      hStarted = true;
+      try {
+        hGL = hInitGL();
+        heroCanvas.addEventListener('webglcontextlost', function(e){ e.preventDefault(); hSwitchToFade(); });
+        hMode = 'gl';
+        hResize();
+        hDraw(0, 0, 0);
+        heroCanvas.classList.add('is-live');
+        if ('ResizeObserver' in window) new ResizeObserver(hQueueResize).observe(heroMedia);
+        else window.addEventListener('resize', hQueueResize, { passive: true });
+      } catch (e) {
+        hSwitchToFade();
+      }
+      hBuildDots();
+      if (reduceMotion) heroPause.hidden = true;
+      heroControls.hidden = false;
+      hSchedule();
+    }
+
+    heroPause.addEventListener('click', function(){
+      hPlaying = !hPlaying;
+      heroPause.setAttribute('aria-pressed', hPlaying ? 'false' : 'true');
+      heroPause.setAttribute('aria-label', hPlaying ? 'Pause the hero slideshow' : 'Play the hero slideshow');
+      hSchedule();
+    });
+    document.addEventListener('visibilitychange', hSchedule);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(entries){ hInView = entries[0].isIntersecting; hSchedule(); }, { threshold: 0.2 }).observe(hero);
+    }
+    var hTx = 0, hTy = 0;
+    hero.addEventListener('touchstart', function(e){ var t = e.changedTouches[0]; hTx = t.clientX; hTy = t.clientY; }, { passive: true });
+    hero.addEventListener('touchend', function(e){
+      var t = e.changedTouches[0], dx = t.clientX - hTx, dy = t.clientY - hTy;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.6) hStep(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    function hLoadSlide(i){
+      if (i >= hN) return;
+      var im = new Image();
+      im.decoding = 'async';
+      im.onload = function(){
+        hImgs[i] = im; hReady[i] = true;
+        if (hDotEls[i]) hDotEls[i].disabled = false;
+        if (i === 1) hStart();
+        hLoadSlide(i + 1);
+      };
+      im.onerror = function(){ hLoadSlide(i + 1); };
+      im.src = heroSrcs[i];
+    }
+    hAfterLoad(function(){
+      if (!(heroImg.complete && heroImg.naturalWidth)) return;
+      hReady[0] = true;
+      hLoadSlide(1);
+    });
+  }
+
 })();
 </script>
 </body>
