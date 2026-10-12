@@ -3,12 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KDQX3RKHV8"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-KDQX3RKHV8');
+/* gtag.js is 170 KB+: hits are queued above and the library loads once the page has settled (or on first touch) */
+(function(){
+  var done = false;
+  function load(){
+    if (done) return; done = true;
+    var s = document.createElement('script'); s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-KDQX3RKHV8';
+    document.head.appendChild(s);
+  }
+  ['pointerdown','keydown','scroll','touchstart'].forEach(function(t){ window.addEventListener(t, load, { once: true, passive: true }); });
+  window.addEventListener('load', function(){ setTimeout(load, 2500); }, { once: true });
+  window.addEventListener('pagehide', load, { once: true });
+})();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Texas barbeque, cooked in Kent. Two hand-built offset smokers, USDA meats, low and slow. Order, book a table, or find us at 13 Northwood Road, Ramsgate.">
@@ -23,7 +35,9 @@ gtag('config', 'G-KDQX3RKHV8');
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-<link rel="preload" as="image" href="img/hero-1.webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="fonts/bevan-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/noto-400.woff2" crossorigin>
+<link rel="preload" as="image" href="img/hero-1.webp" imagesrcset="img/hero-1-sm.webp 750w, img/hero-1.webp 1125w" imagesizes="100vw" fetchpriority="high">
 
 <script src="https://scripts.feedspring.com/google-reviews-attrs.js" async defer></script>
 <script src="https://scripts.feedspring.com/instagram-attrs.js" async defer></script>
@@ -410,7 +424,7 @@ button{font:inherit;cursor:pointer}
 
 <section class="hero" id="top" aria-label="Introduction">
   <div class="hero-media" id="heroMedia">
-    <img id="heroImg" src="img/hero-1.webp" alt="A Lone Star Barbeque tray on a sunlit red table: sliced brisket and turkey, ribs, beans, pickles and a bucket of fries" width="1125" height="1500" fetchpriority="high">
+    <img id="heroImg" src="img/hero-1.webp" srcset="img/hero-1-sm.webp 750w, img/hero-1.webp 1125w" sizes="100vw" alt="A Lone Star Barbeque tray on a sunlit red table: sliced brisket and turkey, ribs, beans, pickles and a bucket of fries" width="1125" height="1500" fetchpriority="high">
     <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   </div>
   <div class="hero-scrim" aria-hidden="true"></div>
@@ -458,7 +472,7 @@ button{font:inherit;cursor:pointer}
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/platter-wild-west.webp" alt="The Wild West platter — sliced brisket and turkey, fries in a bucket, beans, pickles and jalapeño cheese sausage on a tray" width="1200" height="900" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-wild-west.webp" srcset="img/platter-wild-west-640.webp 640w, img/platter-wild-west.webp 1200w" sizes="(max-width: 820px) 92vw, 600px" alt="The Wild West platter — sliced brisket and turkey, fries in a bucket, beans, pickles and jalapeño cheese sausage on a tray" width="1200" height="900" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">12 hour brisket</span><span class="badge badge-navy">Feeds two</span></div>
           <h3>12 hour USDA smoked brisket, 10 hour USA pulled pork &amp; a 4 hour jalapeños &amp; cheese hot link!</h3>
@@ -476,13 +490,13 @@ button{font:inherit;cursor:pointer}
           <p class="platter-desc">Fries triple cooked in beef tallow, house slaw &amp; a pot of our house BBQ sauce! Low and slow on the offset smoker, fuelled with premium Holm Oak.</p>
           <div class="platter-buy"><span class="platter-price"><span class="cur">£</span>26</span><a class="btn btn-primary" href="https://www.just-eat.co.uk/" target="_blank" rel="noopener">Order this platter</a></div>
         </div>
-        <div class="platter-media"><img src="img/platter-texas-ranger.webp" alt="Sliced brisket close up, smoke ring visible, with ribs and sausage in a foil tray" width="1200" height="900" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-texas-ranger.webp" srcset="img/platter-texas-ranger-640.webp 640w, img/platter-texas-ranger.webp 1200w" sizes="(max-width: 820px) 92vw, 600px" alt="Sliced brisket close up, smoke ring visible, with ribs and sausage in a foil tray" width="1200" height="900" loading="lazy"></div>
       </div>
     </article>
 
     <article class="platter tone-red" data-rise="left">
       <div class="platter-grid">
-        <div class="platter-media"><img src="img/platter-pit-boss.webp" alt="The sharing platter on Lone Star paper — ribs, brisket, sausage, pulled pork, cornbread, pickles and sauces" width="1200" height="900" loading="lazy"></div>
+        <div class="platter-media"><img src="img/platter-pit-boss.webp" srcset="img/platter-pit-boss-640.webp 640w, img/platter-pit-boss.webp 1200w" sizes="(max-width: 820px) 92vw, 600px" alt="The sharing platter on Lone Star paper — ribs, brisket, sausage, pulled pork, cornbread, pickles and sauces" width="1200" height="900" loading="lazy"></div>
         <div>
           <div class="platter-badges"><span class="badge badge-red">Feeds four</span><span class="badge badge-navy">Order the day before</span></div>
           <h3>Four meats off the pit, four sides, and everything that goes with them!</h3>
@@ -516,10 +530,10 @@ button{font:inherit;cursor:pointer}
     </div>
 
     <ul class="board-photos" data-rise>
-      <li><div class="board-photo-frame"><img src="img/board-chicken.webp" alt="The buffalo outlaw crispy chicken burger with melted cheese" width="800" height="800" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-smash.webp" alt="Smash patty burger with seasoned fries and a can of Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-thighs.webp" alt="Crispy boneless thigh pieces with peppers and spring onion, fries and a Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Boneless thigh pieces!</div></li>
-      <li><div class="board-photo-frame"><img src="img/board-fries.webp" alt="Jalapeño and cheese hot link with a cup of seasoned fries" width="900" height="900" loading="lazy"></div><div class="board-caption">Fries &amp; hot link!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-chicken.webp" srcset="img/board-chicken-480.webp 480w, img/board-chicken.webp 800w" sizes="(max-width: 820px) 44vw, 260px" alt="The buffalo outlaw crispy chicken burger with melted cheese" width="800" height="800" loading="lazy"></div><div class="board-caption">The buffalo outlaw!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-smash.webp" srcset="img/board-smash-480.webp 480w, img/board-smash.webp 900w" sizes="(max-width: 820px) 44vw, 260px" alt="Smash patty burger with seasoned fries and a can of Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Smash patty &amp; dripping fries!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-thighs.webp" srcset="img/board-thighs-480.webp 480w, img/board-thighs.webp 900w" sizes="(max-width: 820px) 44vw, 260px" alt="Crispy boneless thigh pieces with peppers and spring onion, fries and a Coke" width="900" height="900" loading="lazy"></div><div class="board-caption">Boneless thigh pieces!</div></li>
+      <li><div class="board-photo-frame"><img src="img/board-fries.webp" srcset="img/board-fries-480.webp 480w, img/board-fries.webp 900w" sizes="(max-width: 820px) 44vw, 260px" alt="Jalapeño and cheese hot link with a cup of seasoned fries" width="900" height="900" loading="lazy"></div><div class="board-caption">Fries &amp; hot link!</div></li>
     </ul>
 
     <div class="board-ctas">
@@ -542,7 +556,7 @@ button{font:inherit;cursor:pointer}
       </div>
       <div class="pit-hashtag">#SLOWFEETDONTEAT</div>
     </div>
-    <div class="pit-media" data-rise="right"><img src="img/pit-ribs.webp" alt="A full rack of smoked St. Louis ribs held up in front of the Lone Star Barbeque sign" width="1000" height="1000" loading="lazy"></div>
+    <div class="pit-media" data-rise="right"><img src="img/pit-ribs.webp" srcset="img/pit-ribs-640.webp 640w, img/pit-ribs.webp 1000w" sizes="(max-width: 820px) 420px, 520px" alt="A full rack of smoked St. Louis ribs held up in front of the Lone Star Barbeque sign" width="1000" height="1000" loading="lazy"></div>
   </div>
 </section>
 
@@ -571,7 +585,7 @@ button{font:inherit;cursor:pointer}
 
 <section class="section section-paper find" id="find" aria-labelledby="find-h">
   <div class="wrap find-grid">
-    <div class="find-media" data-rise="left"><img src="img/shop.webp" alt="The Lone Star Barbeque shopfront at 13 Northwood Road, Ramsgate" loading="lazy"></div>
+    <div class="find-media" data-rise="left"><img src="img/shop.webp" srcset="img/shop-480.webp 480w, img/shop.webp 720w" sizes="(max-width: 820px) 92vw, 520px" alt="The Lone Star Barbeque shopfront at 13 Northwood Road, Ramsgate" loading="lazy"></div>
     <div data-rise="right">
       <h2 id="find-h">Find us</h2>
       <div class="find-details">
@@ -646,7 +660,7 @@ button{font:inherit;cursor:pointer}
       <button class="btn btn-primary btn-sm" type="button" id="menuModalClose">Close</button>
     </div>
     <div class="menu-modal-body">
-      <iframe src="img/menu.pdf#view=FitH" title="Lone Star Barbeque full menu"></iframe>
+      <iframe data-src="img/menu.pdf#view=FitH" title="Lone Star Barbeque full menu"></iframe>
     </div>
   </div>
 </div>
@@ -683,6 +697,8 @@ button{font:inherit;cursor:pointer}
   function openMenu(e){
     if (e) e.preventDefault();
     lastFocus = document.activeElement;
+    var frame = modal.querySelector('iframe[data-src]');
+    if (frame) { frame.src = frame.getAttribute('data-src'); frame.removeAttribute('data-src'); }
     modal.classList.add('is-open');
     closeBtn.focus();
   }
@@ -861,7 +877,8 @@ button{font:inherit;cursor:pointer}
   var heroConn = navigator.connection || {};
   var heroLowData = heroConn.saveData || /(^|-)2g$/.test(heroConn.effectiveType || '');
   if (heroMedia && heroImg && heroCanvas && heroControls && heroPause && heroDots && hero && !heroLowData) {
-    var heroSrcs = ['img/hero-1.webp', 'img/hero-2.webp', 'img/hero-3.webp', 'img/hero-4.webp', 'img/hero-5.webp'];
+    var heroSm = window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+    var heroSrcs = [1, 2, 3, 4, 5].map(function(n){ return 'img/hero-' + n + (heroSm ? '-sm' : '') + '.webp'; });
     var heroAlts = [heroImg.getAttribute('alt')];
     var hN = heroSrcs.length;
     var hImgs = [heroImg];
@@ -1121,11 +1138,20 @@ button{font:inherit;cursor:pointer}
       im.onerror = function(){ hLoadSlide(i + 1); };
       im.src = heroSrcs[i];
     }
-    hAfterLoad(function(){
-      if (!(heroImg.complete && heroImg.naturalWidth)) return;
-      hReady[0] = true;
-      hLoadSlide(1);
-    });
+    /* the other four photos wait until the visitor interacts, or the page has been idle for a while,
+       so they never compete with the first photo and the text for bandwidth or the main thread */
+    var hKicked = false;
+    function hKick(){
+      if (hKicked) return; hKicked = true;
+      ['pointerdown','keydown','scroll','touchstart'].forEach(function(t){ window.removeEventListener(t, hKick); });
+      hWhenIdle(function(){
+        if (!(heroImg.complete && heroImg.naturalWidth)) return;
+        hReady[0] = true;
+        hLoadSlide(1);
+      });
+    }
+    ['pointerdown','keydown','scroll','touchstart'].forEach(function(t){ window.addEventListener(t, hKick, { passive: true }); });
+    hAfterLoad(function(){ setTimeout(hKick, 7000); });
   }
 
 })();

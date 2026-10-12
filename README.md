@@ -112,3 +112,11 @@ No build tooling needed — open `index.html` directly in a browser, or serve th
 ```
 python3 -m http.server 8080
 ```
+
+## Page speed pass (October 2026)
+
+- Fonts are preloaded (`bevan-400`, `noto-400`) so the hero text no longer shifts when they arrive (CLS 0.126 to 0).
+- `gtag.js` (170 KB) loads after the page has settled, or on first touch/scroll. Hits are queued in `dataLayer`, so nothing is lost.
+- The menu PDF only loads when the menu pop-up is opened (`data-src` on the iframe).
+- Images use `srcset`: phones get `hero-N-sm`, `platter-*-640`, `board-*-480`, `pit-ribs-640`, `shop-480`. Desktop still gets the full files.
+- Hero slides 2 to 5 wait for a first touch/scroll/click, or 7 seconds after load, before they download and the shader starts.
